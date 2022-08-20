@@ -12,6 +12,6 @@ You can [go to the website](https://Rudxain.github.io/random-creeper-generator) 
 
 # ⭐Credits
 1. Mojang and Microsoft. For developing such a wonderful game
-2. Markus Person "Notch". For accidentaly messing up a pig, lol
+2. Markus Persson "Notch". For accidentaly messing up a pig, lol
 
 The creeper is a creature/mob/entity in the game of Minecraft. It belongs to its corresponging owners and designers. I don't claim property of the creeper.
