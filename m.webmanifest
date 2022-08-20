@@ -4,7 +4,7 @@
 "categories": ["personalization", "entertainment"],
 "start_url": "https://Rudxain.github.io/random-creeper-generator",
 "lang": "en",
-"icons": [{"src": "../res/icon.svg", "sizes": "any", "type": "image/svg+xml"}],
+"icons": [{"src": "i.svg", "sizes": "any", "type": "image/svg+xml"}],
 "background_color": "#000", "theme_color": "#0f0",
 "display": "fullscreen",
 "screenshots" : [

@@ -1,13 +1,9 @@
 'use strict'
+{
 const doc = document ,
 	canv = doc.getElementById('c') ,
 	ctx = canv.getContext( '2d', {alpha:false , desynchronized:true} ) ,
-	sign_abs = x => [Math.sign(x), Math.abs(x)] ,
-	//unary `+` is used to avoid accidental concat
-	randRange = (min=0 , max=1) => Math.random() * (max - min) + +min ,
-	clamp = (x, min, max) => x > max ? max : x < min ? min : x ,
-	//convert to u32 and return a B16 str whose max byte length is `B`
-	hexPad = (x=0, B=4) => (x >>> 0) .toString(0x10) .padStart(B << 1, '0')
+	randRange = (min=0 , max=1) => Math.random() * (max - min) + +min
 
 let w=0, h=0
 
@@ -70,7 +66,7 @@ const draw_face = () => {
 	ctx.fillRect( center_x + size, center_y + size, size, size3 )
 }
 
-const main = ()=>{
+
 	let tm_ID
 	resize()
 
@@ -79,5 +75,3 @@ const main = ()=>{
 		tm_ID = setTimeout( resize, settings.resize_delay_ms )
 	})
 }
-if (typeof require == 'undefined' && typeof WorkerGlobalScope == 'undefined')
-	main()
