@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 8 8" style="background-color:#0f0" xmlns="http://www.w3.org/2000/svg">
+	<!--BG-->
+	<rect width="8" height="8" fill="#0f0"/>
+	<!--eyes-->
+	<path d="M1,2.5 h1.5 v1 h-1.5 M5,2.5 h1.5 v1 h-1.5" stroke="#000"/>
+	<!--mouth-->
+	<rect x="2" y="4" width="4" height="4"/>
+	<!--mask-->
+	<path d="M3,4.5 h-2 M5,4.5 h2 M3,7.5 h2" stroke="#0f0"/>
+</svg>
