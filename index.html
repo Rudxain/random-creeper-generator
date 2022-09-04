@@ -26,22 +26,10 @@
 
 		<meta name=color-scheme content='light dark'>
 		<meta name=theme-color content=#0f0>
-		<style>
-			.center {
-				position: absolute;
-				top:50%; left:50%;
-				transform: translate(-50%,-50%)
-			}
-
-			html, body {
-				width: 100vw; height: 100vh;
-				overflow: hidden; display: block
-			}
-			canvas {image-rendering: pixelated}
-		</style>
+		<style>.center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)};body{width:100vw;height:100vh;overflow:hidden;display:block};canvas{image-rendering:pixelated}</style>
 	</head>
 	<body>
 		<canvas id=c class=center>Update browser or enable JS</canvas>
-		<script src=a.js></script>
+		<script>'use strict';{let a=document,b=a.getElementById('c'),c=b.getContext('2d',{alpha:!1,desynchronized:!0}),d=(a=0,b=1)=>Math.random()*(b-a)+a,e={a:64,f:1/16,g:100/8,h:100/8,m:1500},f=()=>{b.width=a.body.clientWidth,b.height=a.body.clientHeight,g(),h()},g=()=>{let{a,f,g,h}=e,i=d();for(let e=0;e<b.height;e+=a)for(let j=0;j<b.width;j+=a){let b=i+d(-f,f),k=100+d(-g,g),l=50+d(-h,h);c.fillStyle=`hsl(${b}turn ${k}% ${l}%)`,c.fillRect(j,e,a,a)}},h=()=>{let a=e.a,d=2*a,f=3*a,g=b.width/2,h=b.height/2;c.fillStyle='#000',c.fillRect(g-f,h-d,d,d),c.fillRect(g+a,h-d,d,d),c.fillRect(g-a,h,d,f),c.fillRect(g-d,h+a,a,f),c.fillRect(g+a,h+a,a,f)};(()=>{f();let a;addEventListener('resize',()=>{clearTimeout(a),a=setTimeout(f,e.m)})})()}</script>
 	</body>
 </HTML>
