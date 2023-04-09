@@ -1,18 +1,64 @@
-'use strict';
-//for debugging
-//eslint-disable-next-line no-unused-vars
+//@ts-check
+'use strict'
+// for debugging
 const RCG_settings = (() => {
 	const doc = document
 
-	/**@type {HTMLCanvasElement}*/
-	const canv = doc.getElementById('c')
-	const ctx = canv.getContext('2d', { alpha: false, desynchronized: true })
+	const canv = /**@type {HTMLCanvasElement}*/(doc.getElementById('c'))
+	const ctx = /**@type {CanvasRenderingContext2D}*/(canv.getContext('2d', { alpha: false, desynchronized: true }))
 
+	/**
+	@param {boolean} condition
+	@param {string} message
+	*/
+	const assert = (condition, message) => { if (!condition) throw new Error(message) }
+
+	// for consistency with ECMAScript,
+	// I decided to define truncated division, rather than floored
+	/**
+	divide `n` by `d`, then `trunc`ate.
+	@param {number} n numerator or dividend
+	@param {number} d denominator or divisor
+	*/
+	const divTrunc = (n, d) => Math.trunc(n / d)
+
+	/**
+	Generates a sequence of integers,
+	from `init` to `end`, with `step` increments.
+	@param init initializer (inclusive)
+	@param end max value (exclusive)
+	@param step increment distance
+	*/
+	const range = function* (init = 0, end = 0, step = 1) {
+		const
+			NOT_INT_MSG = ' is not int',
+			NEG_MSG = ' is negative, expected unsigned'
+
+		if (!Number.isInteger(init))
+			throw new RangeError('`init`' + NOT_INT_MSG)
+		// there's no problem if negative
+
+		if (!Number.isInteger(end))
+			throw new RangeError('`count`' + NOT_INT_MSG)
+		if (end < 0)
+			throw new RangeError('`count`' + NEG_MSG)
+
+		if (!Number.isInteger(step))
+			throw new RangeError('`inc`' + NOT_INT_MSG)
+		if (step < 0)
+			throw new RangeError('`inc`' + NEG_MSG)
+
+		for (let i = init; i < end; i += step) yield i
+	}
+
+	/**
+	Returns a pseudo-random `number` between `min` and `max`.
+	*/
 	const randRange = (min = 0, max = 1) => Math.random() * (max - min) + min
 
 	const settings = {
 		pixel_size: 0x40,
-		hue_variation: 1 / 16,
+		hue_variation: 1 / 0x10,
 		sat_variation: 1 / 8 * 100,
 		l_variation: 1 / 8 * 100,
 		resize_delay_ms: 1500
@@ -28,26 +74,33 @@ const RCG_settings = (() => {
 
 	const draw_bg = () => {
 		const {
-			pixel_size: size,
+			pixel_size: size1,
 			hue_variation: h_var,
 			sat_variation: s_var,
 			l_variation: l_var
 		} = settings
+
+		const size2 = size1 * 2
 
 		const
 			hue_base = randRange(),
 			sat_base = 100,
 			l_base = 50
 
-		for (let y = 0; y < canv.height; y += size)
-			for (let x = 0; x < canv.width; x += size) {
+		const
+			center_x = divTrunc(canv.width, 2),
+			center_y = divTrunc(canv.height, 2)
+
+		for (const y of range((center_y - size2) % size1 - size1, canv.height, size1))
+			for (const x of range((center_x - size2) % size1 - size1, canv.width, size1)) {
+				// should this be replaced by Perlin noise?
 				const
 					hue_now = hue_base + randRange(-h_var, h_var),
 					sat_now = sat_base + randRange(-s_var, s_var),
 					l_now = l_base + randRange(-l_var, l_var)
 
 				ctx.fillStyle = `hsl(${hue_now}turn ${sat_now}% ${l_now}%)`
-				ctx.fillRect(x, y, size, size)
+				ctx.fillRect(x, y, size1, size1)
 			}
 	}
 
@@ -55,21 +108,25 @@ const RCG_settings = (() => {
 		const
 			size1 = settings.pixel_size,
 			size2 = size1 * 2,
-			size3 = size1 * 3,
-			center_x = canv.width / 2,
-			center_y = canv.height / 2
+			size3 = size1 + size2
+
+		assert(size3 === size1 * 3, 'math went wrong')
+
+		const
+			center_x = divTrunc(canv.width, 2),
+			center_y = divTrunc(canv.height, 2)
 
 		ctx.fillStyle = '#000'
 
-		//left eye
+		// left eye
 		ctx.fillRect(center_x - size3, center_y - size2, size2, size2)
-		//right eye
+		// right eye
 		ctx.fillRect(center_x + size1, center_y - size2, size2, size2)
-		//mouth (center)
+		// mouth (center)
 		ctx.fillRect(center_x - size1, center_y, size2, size3)
-		//mouth (left)
+		// mouth (left)
 		ctx.fillRect(center_x - size2, center_y + size1, size1, size3)
-		//mouth (right)
+		// mouth (right)
 		ctx.fillRect(center_x + size1, center_y + size1, size1, size3)
 	}
 
@@ -82,8 +139,7 @@ const RCG_settings = (() => {
 			tm_ID = setTimeout(resize, settings.resize_delay_ms)
 		})
 	}
-	if (typeof require == 'undefined' && typeof WorkerGlobalScope == 'undefined')
-		main()
+	main()
 
 	return settings
 })()
