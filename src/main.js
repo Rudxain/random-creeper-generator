@@ -24,24 +24,6 @@ const RCG_settings = (() => {
 	@param step increment distance
 	*/
 	const range = function* (init = 0, end = 0, step = 1) {
-		const
-			NOT_INT_MSG = ' is not int',
-			NEG_MSG = ' is negative, expected unsigned'
-
-		if (!Number.isInteger(init))
-			throw new RangeError('`init`' + NOT_INT_MSG)
-		// there's no problem if negative
-
-		if (!Number.isInteger(end))
-			throw new RangeError('`count`' + NOT_INT_MSG)
-		if (end < 0)
-			throw new RangeError('`count`' + NEG_MSG)
-
-		if (!Number.isInteger(step))
-			throw new RangeError('`inc`' + NOT_INT_MSG)
-		if (step < 0)
-			throw new RangeError('`inc`' + NEG_MSG)
-
 		for (let i = init; i < end; i += step) yield i
 	}
 
