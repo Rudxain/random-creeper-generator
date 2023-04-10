@@ -7,8 +7,8 @@ const RCG_settings = (() => {
 	const canv = /**@type {HTMLCanvasElement}*/(doc.getElementById('c'))
 	const ctx = /**@type {CanvasRenderingContext2D}*/(canv.getContext('2d', { alpha: false, desynchronized: true }))
 
-	// for consistency with ECMAScript,
-	// I decided to define truncated division, rather than floored
+	// for consistency with `%`,
+	// I defined truncated (instead of floored) division
 	/**
 	divide `n` by `d`, then `trunc`ate.
 	@param {number} n numerator or dividend
