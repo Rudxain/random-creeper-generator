@@ -7,12 +7,6 @@ const RCG_settings = (() => {
 	const canv = /**@type {HTMLCanvasElement}*/(doc.getElementById('c'))
 	const ctx = /**@type {CanvasRenderingContext2D}*/(canv.getContext('2d', { alpha: false, desynchronized: true }))
 
-	/**
-	@param {boolean} condition
-	@param {string} message
-	*/
-	const assert = (condition, message) => { if (!condition) throw new Error(message) }
-
 	// for consistency with ECMAScript,
 	// I decided to define truncated division, rather than floored
 	/**
@@ -57,42 +51,47 @@ const RCG_settings = (() => {
 	const randRange = (min = 0, max = 1) => Math.random() * (max - min) + min
 
 	const settings = {
-		pixel_size: 0x40,
 		hue_variation: 1 / 0x10,
-		sat_variation: 1 / 8 * 100,
-		l_variation: 1 / 8 * 100,
-		resize_delay_ms: 1500
+		sat_variation: 100 / 8,
+		l_variation: 100 / 8,
+		resize_delay_ms: 0x200
 	}
 
 	const resize = () => {
-		canv.width = doc.body.clientWidth
-		canv.height = doc.body.clientHeight
+		const pixel_size = divTrunc(Math.min(
+			canv.width = doc.body.clientWidth,
+			canv.height = doc.body.clientHeight
+		), 8)
 
-		draw_bg()
-		draw_face()
+		const
+			center_x = divTrunc(canv.width, 2),
+			center_y = divTrunc(canv.height, 2)
+
+		draw_bg(pixel_size, center_x, center_y)
+		draw_face(pixel_size, center_x, center_y)
 	}
 
-	const draw_bg = () => {
+	/**
+	@param {number} pix_size
+	@param {number} c_x
+	@param {number} c_y
+	*/
+	const draw_bg = (pix_size, c_x, c_y) => {
+		const pix_size2 = pix_size * 2
+
 		const {
-			pixel_size: size1,
 			hue_variation: h_var,
 			sat_variation: s_var,
 			l_variation: l_var
 		} = settings
-
-		const size2 = size1 * 2
 
 		const
 			hue_base = randRange(),
 			sat_base = 100,
 			l_base = 50
 
-		const
-			center_x = divTrunc(canv.width, 2),
-			center_y = divTrunc(canv.height, 2)
-
-		for (const y of range((center_y - size2) % size1 - size1, canv.height, size1))
-			for (const x of range((center_x - size2) % size1 - size1, canv.width, size1)) {
+		for (const y of range((c_y - pix_size2) % pix_size - pix_size, canv.height, pix_size))
+			for (const x of range((c_x - pix_size2) % pix_size - pix_size, canv.width, pix_size)) {
 				// should this be replaced by Perlin noise?
 				const
 					hue_now = hue_base + randRange(-h_var, h_var),
@@ -100,34 +99,32 @@ const RCG_settings = (() => {
 					l_now = l_base + randRange(-l_var, l_var)
 
 				ctx.fillStyle = `hsl(${hue_now}turn ${sat_now}% ${l_now}%)`
-				ctx.fillRect(x, y, size1, size1)
+				ctx.fillRect(x, y, pix_size, pix_size)
 			}
 	}
 
-	const draw_face = () => {
+	/**
+	@param {number} pix_size
+	@param {number} x
+	@param {number} y
+	*/
+	const draw_face = (pix_size, x, y) => {
 		const
-			size1 = settings.pixel_size,
-			size2 = size1 * 2,
-			size3 = size1 + size2
-
-		assert(size3 === size1 * 3, 'math went wrong')
-
-		const
-			center_x = divTrunc(canv.width, 2),
-			center_y = divTrunc(canv.height, 2)
+			s2 = pix_size * 2,
+			s3 = pix_size + s2
 
 		ctx.fillStyle = '#000'
 
 		// left eye
-		ctx.fillRect(center_x - size3, center_y - size2, size2, size2)
+		ctx.fillRect(x - s3, y - s2, s2, s2)
 		// right eye
-		ctx.fillRect(center_x + size1, center_y - size2, size2, size2)
+		ctx.fillRect(x + pix_size, y - s2, s2, s2)
 		// mouth (center)
-		ctx.fillRect(center_x - size1, center_y, size2, size3)
+		ctx.fillRect(x - pix_size, y, s2, s3)
 		// mouth (left)
-		ctx.fillRect(center_x - size2, center_y + size1, size1, size3)
+		ctx.fillRect(x - s2, y + pix_size, pix_size, s3)
 		// mouth (right)
-		ctx.fillRect(center_x + size1, center_y + size1, size1, size3)
+		ctx.fillRect(x + pix_size, y + pix_size, pix_size, s3)
 	}
 
 	const main = () => {
